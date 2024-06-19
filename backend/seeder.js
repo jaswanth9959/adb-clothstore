@@ -5,8 +5,9 @@ import users from "./data/customers.js";
 import products from "./data/products.js";
 import Product from "./models/Product.js";
 import User from "./models/User.js";
+import Category from "./models/Category.js";
 // import Shoe from "./models/shoe.js";
-// import Category from "./models/category.js";
+import category from "./data/category.js";
 // import Staff from "./models/staff.js";
 dotenv.config();
 
@@ -16,9 +17,9 @@ const importData = async () => {
   try {
     await User.deleteMany();
     await Product.deleteMany();
-    // await Category.deleteMany();
+    await Category.deleteMany();
     // await Staff.deleteMany();
-    // const createdCategories = await Category.insertMany(category);
+    const createdCategories = await Category.insertMany(category);
     const createdStaff = await User.insertMany(users);
     // const createdStaff = await Staff.insertMany(staff);
     const adminStaff = createdStaff[0]._id;
@@ -27,6 +28,7 @@ const importData = async () => {
       return {
         ...p,
         createdBy: adminStaff,
+        category: createdCategories[0]._id,
       };
     });
 
@@ -45,7 +47,7 @@ const destroyData = async () => {
   try {
     await User.deleteMany();
     await Product.deleteMany();
-    // await Category.deleteMany();
+    await Category.deleteMany();
     // await Staff.deleteMany();
     console.log("---DATA HAS BEEN DESTROYED---");
     process.exit();

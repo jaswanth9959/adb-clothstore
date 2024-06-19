@@ -23,6 +23,10 @@ const orderSchema = mongoose.Schema(
         },
       },
     ],
+    orderType: {
+      type: String,
+      required: true,
+    },
     orderDetails: {
       type: String,
       required: true,
@@ -60,13 +64,15 @@ const orderSchema = mongoose.Schema(
     paidAt: {
       type: Date,
     },
-    isCompleted: {
-      type: Boolean,
+    orderStatus: {
+      type: String,
       required: true,
-      default: false,
     },
     completedOn: {
       type: Date,
+    },
+    deliveredBy: {
+      type: String,
     },
   },
   {

@@ -10,6 +10,7 @@ const addOrderItems = asyncHandler(async (req, res) => {
     orderItems,
     orderDetails,
     paymentMethod,
+    orderType,
     itemsPrice,
     taxPrice,
     shippingPrice,
@@ -23,6 +24,24 @@ const addOrderItems = asyncHandler(async (req, res) => {
     res.status(400);
     throw new Error("no order Items");
   }
+  // console.log(orderItems);
+  for (const item of orderItems) {
+    try {
+      const product = await Product.findById(item.id);
+      if (product) {
+        if (product.stock[item.selectId] >= item.qty) {
+          product.stock[item.selectId] -= item.qty;
+          await product.save();
+        } else {
+          console.log(`Insufficient stock for product ${product.name}`);
+        }
+      } else {
+        console.log(`Product with ID ${item.id} not found`);
+      }
+    } catch (error) {
+      console.error(`Error updating stock for product ID ${item.id}:`, error);
+    }
+  }
   const payment = new Payment({
     email,
     cardNumber,
@@ -30,7 +49,6 @@ const addOrderItems = asyncHandler(async (req, res) => {
     status: "Paid",
   });
   const createdPayment = await payment.save();
-
   const order = new Order({
     orderItems: orderItems.map((x) => ({
       ...x,
@@ -41,6 +59,8 @@ const addOrderItems = asyncHandler(async (req, res) => {
     isPaid: true,
     paymentID: createdPayment._id,
     paidAt: Date.now(),
+    orderType,
+    orderStatus: "Order Received. We will process soon.",
     orderDetails,
     paymentMethod,
     itemsPrice,
@@ -109,19 +129,51 @@ const getAllOrders = asyncHandler(async (req, res) => {
 //   res.status(200).json(orders);
 // });
 
+const updatePickUpStatus = asyncHandler(async (req, res) => {
+  const order = await Order.findById(req.params.id);
+
+  if (order) {
+    order.orderStatus = "Order is Completed.";
+    order.completedOn = Date.now();
+    order.deliveredBy = "Admin User";
+    const updatedorder = await order.save();
+
+    res.json(updatedorder);
+  } else {
+    res.status(404);
+    throw new Error("order not found");
+  }
+});
 const updateOrderStatus = asyncHandler(async (req, res) => {
   const order = await Order.findById(req.params.id);
 
   if (order) {
-    order.isCompleted = true;
-    order.completedOn = Date.now();
+    if (order.orderType === "Delivery") {
+      if (order.orderStatus === "Order Received. We will process soon.") {
+        order.orderStatus = "Order Is Ready. Will be Delivered Soon.";
+      }
+      if (order.orderStatus === "Order Is Ready. Will be Delivered Soon.") {
+        order.orderStatus = "Out For Delivery";
+      } else {
+        order.orderStatus = "Order is Completed.";
+        order.completedOn = Date.now();
+        order.deliveredBy = "Admin User";
+      }
 
-    const updatedOrder = await order.save();
+      const updatedorder = await order.save();
 
-    res.json(updatedOrder);
+      res.json(updatedorder);
+    } else {
+      order.orderStatus = "Order is Completed.";
+      order.completedOn = Date.now();
+      order.deliveredBy = "Admin User";
+      const updatedorder = await order.save();
+
+      res.json(updatedorder);
+    }
   } else {
     res.status(404);
-    throw new Error("Order not found");
+    throw new Error("order not found");
   }
 });
 
@@ -130,5 +182,6 @@ export {
   getMyOrders,
   getOrderById,
   updateOrderStatus,
+  updatePickUpStatus,
   getAllOrders,
 };

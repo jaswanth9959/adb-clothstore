@@ -15,6 +15,11 @@ function EditUserScreen() {
   const [email, setEmail] = useState("");
   const [dob, setDob] = useState("");
   const [phone, setPhone] = useState("");
+  const [address, setAddress] = useState("");
+  const [city, setCity] = useState("");
+  const [pin, setPin] = useState("");
+  const [state, setState] = useState("");
+  const [country, setCountry] = useState("");
   const [updateProfile, { isLoading: loadingUpdateProfile }] =
     useProfileMutation();
 
@@ -43,6 +48,11 @@ function EditUserScreen() {
       setFirstName(user.firstname);
       setLastName(user.lastname);
       setEmail(user.email);
+      setAddress(user.address);
+      setCity(user.city);
+      setPin(user.pin);
+      setState(user.state);
+      setCountry(user.country);
     }
   }, [user]);
 
@@ -100,6 +110,51 @@ function EditUserScreen() {
                 placeholder="Enter DOB"
                 value={dob}
                 onChange={(e) => setDob(e.target.value)}
+              ></Form.Control>
+            </Form.Group>
+            <Form.Group className="my-2" controlId="lastname22">
+              <Form.Label>Address</Form.Label>
+              <Form.Control
+                type="text"
+                placeholder="Enter Address"
+                value={address}
+                onChange={(e) => setAddress(e.target.value)}
+              ></Form.Control>
+            </Form.Group>
+            <Form.Group className="my-2" controlId="lastname233">
+              <Form.Label>City</Form.Label>
+              <Form.Control
+                type="text"
+                placeholder="Enter City"
+                value={city}
+                onChange={(e) => setCity(e.target.value)}
+              ></Form.Control>
+            </Form.Group>
+            <Form.Group className="my-2" controlId="lastname22222">
+              <Form.Label>Pin</Form.Label>
+              <Form.Control
+                type="text"
+                placeholder="Enter Pin"
+                value={pin}
+                onChange={(e) => setPin(e.target.value)}
+              ></Form.Control>
+            </Form.Group>
+            <Form.Group className="my-2" controlId="lastna">
+              <Form.Label>State</Form.Label>
+              <Form.Control
+                type="text"
+                placeholder="Enter State"
+                value={state}
+                onChange={(e) => setState(e.target.value)}
+              ></Form.Control>
+            </Form.Group>
+            <Form.Group className="my-2" controlId="lastnamegggg">
+              <Form.Label>Country</Form.Label>
+              <Form.Control
+                type="text"
+                placeholder="Enter Country"
+                value={country}
+                onChange={(e) => setCountry(e.target.value)}
               ></Form.Control>
             </Form.Group>
 

@@ -36,6 +36,12 @@ export const ordersApiSlice = apiSlice.injectEndpoints({
         method: "PUT",
       }),
     }),
+    updatePickupStatus: builder.mutation({
+      query: (orderId) => ({
+        url: `${ORDERS_URL}/${orderId}/pickup`,
+        method: "PUT",
+      }),
+    }),
   }),
 });
 
@@ -44,5 +50,6 @@ export const {
   useGetOrderDetailsQuery,
   useGetAllOrdersQuery,
   useUpdateOrderStatusMutation,
+  useUpdatePickupStatusMutation,
   useGetMyOrdersQuery,
 } = ordersApiSlice;

@@ -4,6 +4,7 @@ import { useSelector } from "react-redux";
 import {
   useGetOrderDetailsQuery,
   useUpdateOrderStatusMutation,
+  useUpdatePickupStatusMutation,
 } from "../slices/ordersApiSlice";
 
 const OrderScreen = () => {
@@ -19,8 +20,14 @@ const OrderScreen = () => {
   const [deliverOrder, { isLoading: loadingDeliver }] =
     useUpdateOrderStatusMutation();
 
+  const [pickupOrder, { isLoading: loadingPickup }] =
+    useUpdatePickupStatusMutation();
   const { userInfo } = useSelector((state) => state.auth);
 
+  const deliverHandler2 = async () => {
+    await pickupOrder(orderId);
+    refetch();
+  };
   const deliverHandler = async () => {
     await deliverOrder(orderId);
     refetch();
@@ -45,23 +52,31 @@ const OrderScreen = () => {
               <p>
                 <strong>Email: </strong> {order.user.email}
               </p>
+              <h6>
+                <strong>Order Type</strong> : {order.orderType}
+              </h6>
               {order.shippingPrice === 0.0 ? (
                 <p>
-                  <strong>Pick up Details</strong> {order.orderDetails}
+                  <strong>Pick up Details :</strong> {order.orderDetails}
                 </p>
               ) : (
                 <p>
-                  <strong>Address:</strong> {order.orderDetails}
+                  <strong>Address : </strong> {order.orderDetails}
                 </p>
               )}
-              {order.isCompleted ? (
-                <h5 style={{ color: "green" }}>
-                  Delivered on{" "}
-                  {new Date(order.completedOn).toLocaleDateString("en-US")}{" "}
-                  {new Date(order.completedOn).toLocaleTimeString("en-US")}
-                </h5>
+
+              <h4 style={{ color: "green" }}>Order Status:</h4>
+              {order.orderStatus === "Order is Completed." ? (
+                <>
+                  <h5 style={{ color: "green" }}>
+                    Order Completed on{" "}
+                    {new Date(order.completedOn).toLocaleDateString("en-US")}{" "}
+                    {new Date(order.completedOn).toLocaleTimeString("en-US")}
+                  </h5>
+                  <h6>By: {order?.deliveredBy}</h6>
+                </>
               ) : (
-                <h5>Not Delivered</h5>
+                <h5>{order.orderStatus}</h5>
               )}
             </ListGroup.Item>
 
@@ -103,9 +118,9 @@ const OrderScreen = () => {
                             {item.name}
                           </Link>
                         </Col>
-                        <Col>{item.brand}</Col>
-
-                        <Col>{item.size}</Col>
+                        <Col>Brand:{item.brand}</Col>
+                        <Col>Color: {item.color}</Col>
+                        <Col>size:{item.size}</Col>
                         {/* <Col></Col> */}
                         <Col>
                           {item.qty} x ${item.price} = ${item.qty * item.price}
@@ -150,18 +165,42 @@ const OrderScreen = () => {
               </ListGroup.Item>
 
               {loadingDeliver && <p>Loading...</p>}
-
+              {loadingPickup && <p>Loading..</p>}
               {userInfo &&
                 userInfo.user.role === "admin" &&
                 order.isPaid &&
-                !order.isCompleted && (
+                order.orderStatus === "Order Received. We will process soon." &&
+                order.orderType === "Pickup" && (
                   <ListGroup.Item>
                     <Button
                       type="button"
                       className="btn btn-block"
                       onClick={deliverHandler}
                     >
-                      Mark As Delivered
+                      Mark As Completed
+                    </Button>
+                  </ListGroup.Item>
+                )}
+
+              {userInfo &&
+                userInfo.user.role === "admin" &&
+                order.isPaid &&
+                order.orderType === "Delivery" &&
+                order.orderStatus !== "Order is Completed." && (
+                  <ListGroup.Item>
+                    <Button
+                      type="button"
+                      className="btn btn-block"
+                      onClick={deliverHandler}
+                    >
+                      {order.orderStatus ===
+                        "Order Received. We will process soon." &&
+                        "Mark As Out For Delivery"}
+                      {order.orderStatus ===
+                        "Order Is Ready. Will be Delivered Soon." &&
+                        "Mark As Out For Delivery"}
+                      {order.orderStatus === "Out For Delivery" &&
+                        "Mark As Delivered"}
                     </Button>
                   </ListGroup.Item>
                 )}

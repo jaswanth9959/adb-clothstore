@@ -38,8 +38,9 @@ const productSchema = new mongoose.Schema(
       required: true,
     },
     category: {
-      type: String,
+      type: mongoose.Schema.Types.ObjectId,
       required: true,
+      ref: "Category",
     },
     image: {
       type: String,
@@ -49,8 +50,23 @@ const productSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-
-    variant: [variantSchema],
+    stock: {
+      type: Array,
+      required: true,
+    },
+    size: {
+      type: Array,
+      required: true,
+    },
+    color: {
+      type: String,
+      required: true,
+    },
+    price: {
+      type: Number,
+      required: true,
+      default: 0,
+    },
   },
   { timestamps: true }
 );

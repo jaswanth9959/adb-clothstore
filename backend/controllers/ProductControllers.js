@@ -2,12 +2,12 @@ import asyncHandler from "../middlewares/asyncHandler.js";
 import Product from "../models/Product.js";
 import mongoose from "mongoose";
 const getProducts = asyncHandler(async (req, res) => {
-  const products = await Product.find({});
+  const products = await Product.find({}).populate("category");
   res.status(200).json(products);
 });
 
 const getProductByID = asyncHandler(async (req, res) => {
-  const product = await Product.findById(req.params.id);
+  const product = await Product.findById(req.params.id).populate("category");
   res.status(200).json(product);
 });
 
@@ -115,7 +115,17 @@ const editVariant = asyncHandler(async (req, res) => {
 });
 
 const updateProduct = asyncHandler(async (req, res) => {
-  const { name, description, image, brand, category } = req.body;
+  const {
+    name,
+    description,
+    image,
+    brand,
+    category,
+    price,
+    stock,
+    size,
+    color,
+  } = req.body;
 
   const product = await Product.findById(req.params.id);
 
@@ -125,6 +135,10 @@ const updateProduct = asyncHandler(async (req, res) => {
     product.image = image;
     product.brand = brand;
     product.category = category;
+    product.price = price;
+    product.stock = stock;
+    product.color = color;
+    product.size = size;
 
     const updatedProduct = await product.save();
     res.json(updatedProduct);
@@ -135,13 +149,28 @@ const updateProduct = asyncHandler(async (req, res) => {
 });
 
 const createProduct = asyncHandler(async (req, res) => {
-  const { name, brand, description, category, image, userId } = req.body;
+  const {
+    name,
+    brand,
+    description,
+    category,
+    image,
+    userId,
+    price,
+    stock,
+    size,
+    color,
+  } = req.body;
   const product = new Product({
     name,
     brand,
     description,
     category,
     image,
+    price,
+    stock,
+    size,
+    color,
     createdBy: userId,
   });
 

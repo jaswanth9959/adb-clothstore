@@ -21,7 +21,7 @@ const Product = ({ product }) => {
         </Card.Text>
         <Card.Text as="div">
           <Card.Text as="p">
-            category : <strong>{product.category}</strong>
+            category : <strong>{product.category.name}</strong>
           </Card.Text>
         </Card.Text>
       </Card.Body>

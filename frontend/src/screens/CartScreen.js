@@ -20,7 +20,7 @@ const CartScreen = () => {
 
   return (
     <Row>
-      <Col md={8}>
+      <Col md={9}>
         <h1 style={{ marginBottom: "20px" }}>Shopping Cart</h1>
         {cartItems.length === 0 ? (
           <h4>
@@ -42,9 +42,10 @@ const CartScreen = () => {
                   <Col md={2}>
                     <Link to={`/product/${item.id}`}>{item.name}</Link>
                   </Col>
-                  <Col md={2}>Brand: {item.brand}</Col>
+
                   <Col md={2}>Price: ${item.price}</Col>
                   <Col>Size: {item.size}</Col>
+                  <Col>Qty: {item.qty}</Col>
                   <Col md={2}>Color: {item.color}</Col>
 
                   <Col>
@@ -63,7 +64,7 @@ const CartScreen = () => {
         )}
       </Col>
       {cartItems.length > 0 && (
-        <Col md={4}>
+        <Col md={3}>
           <Card>
             <ListGroup variant="flush">
               <ListGroup.Item>

@@ -1,12 +1,11 @@
 import { useState, useEffect } from "react";
-import { Form, Button, Row, Col, ListGroup } from "react-bootstrap";
+import { Form, Button, Row, Col } from "react-bootstrap";
 import {
   useGetProductByIdQuery,
-  useCreateVariantMutation,
-  useDeleteVariantMutation,
   useUploadProductImageMutation,
   useUpdateProductMutation,
 } from "../../slices/productsApiSlice";
+import { useGetCategoriesQuery } from "../../slices/categoryApiSlice";
 import { Link, useParams, useNavigate } from "react-router-dom";
 
 function EditProductScreen() {
@@ -17,13 +16,13 @@ function EditProductScreen() {
   const [category, setCategory] = useState("");
   const [description, setDescription] = useState("");
   const [image, setImage] = useState("");
-  const [stock, setStock] = useState("");
+  const [st, setSt] = useState("");
   const [color, setColor] = useState("");
   const [price, setPrice] = useState("");
-  const [size, setSize] = useState("");
-
-  const [createVariant, { isLoading: loadingProductReview }] =
-    useCreateVariantMutation();
+  const [si, setSi] = useState("");
+  const { data: categories } = useGetCategoriesQuery();
+  // const [createVariant, { isLoading: loadingProductReview }] =
+  //   useCreateVariantMutation();
 
   const [updateProduct, { isLoading: loadingUpdate }] =
     useUpdateProductMutation();
@@ -31,12 +30,14 @@ function EditProductScreen() {
   const [uploadProductImage, { isLoading: loadingUpload }] =
     useUploadProductImageMutation();
 
-  const [deleteVariant, { isLoading: loading }] = useDeleteVariantMutation();
+  // const [deleteVariant, { isLoading: loading }] = useDeleteVariantMutation();
 
   const navigate = useNavigate();
 
   const submitHandler2 = async (e) => {
     e.preventDefault();
+    const size = si.split(",").map((o) => o.trim());
+    const stock = st.split(",").map((o) => Number(o.trim()));
     try {
       await updateProduct({
         productId,
@@ -45,6 +46,10 @@ function EditProductScreen() {
         brand,
         category,
         description,
+        stock,
+        size,
+        color,
+        price,
       }).unwrap();
       window.alert("Product updated");
       refetch();
@@ -66,38 +71,38 @@ function EditProductScreen() {
     }
   };
 
-  const deleteHandler = async (id) => {
-    if (window.confirm("Are you sure")) {
-      try {
-        await deleteVariant(id);
-        refetch();
-      } catch (err) {
-        window.alert(err?.data?.message || err.error);
-      }
-    }
-  };
+  // const deleteHandler = async (id) => {
+  //   if (window.confirm("Are you sure")) {
+  //     try {
+  //       await deleteVariant(id);
+  //       refetch();
+  //     } catch (err) {
+  //       window.alert(err?.data?.message || err.error);
+  //     }
+  //   }
+  // };
 
-  const submitHandler = async (e) => {
-    e.preventDefault();
+  // const submitHandler = async (e) => {
+  //   e.preventDefault();
 
-    try {
-      await createVariant({
-        productId,
-        size,
-        stock,
-        price,
-        color,
-      }).unwrap();
-      refetch();
-      window.alert("variant created successfully");
-      setColor("");
-      setSize("");
-      setPrice("");
-      setStock("");
-    } catch (err) {
-      window.alert(err?.data?.message || err.error);
-    }
-  };
+  //   try {
+  //     await createVariant({
+  //       productId,
+  //       size,
+  //       stock,
+  //       price,
+  //       color,
+  //     }).unwrap();
+  //     refetch();
+  //     window.alert("variant created successfully");
+  //     setColor("");
+  //     setSize("");
+  //     setPrice("");
+  //     setStock("");
+  //   } catch (err) {
+  //     window.alert(err?.data?.message || err.error);
+  //   }
+  // };
 
   useEffect(() => {
     if (product) {
@@ -105,6 +110,11 @@ function EditProductScreen() {
       setName(product.name);
       setBrand(product.brand);
       setCategory(product.category);
+      setSt(product.stock.join(","));
+      setSi(product.size.join(","));
+      setColor(product.color);
+      setPrice(product.price);
+      setImage(product.image);
     }
   }, [product]);
 
@@ -155,11 +165,17 @@ function EditProductScreen() {
             <Form.Group className="my-2" controlId="email">
               <Form.Label>Category</Form.Label>
               <Form.Control
-                type="text"
-                placeholder="Enter category"
+                as="select"
                 value={category}
                 onChange={(e) => setCategory(e.target.value)}
-              ></Form.Control>
+              >
+                <option>Select</option>
+                {categories?.map((cat) => (
+                  <option key={cat._id} value={cat._id}>
+                    {cat.name}
+                  </option>
+                ))}
+              </Form.Control>
             </Form.Group>
             <Form.Group className="my-2" controlId="email1">
               <Form.Label>description</Form.Label>
@@ -171,6 +187,43 @@ function EditProductScreen() {
               ></Form.Control>
             </Form.Group>
 
+            <Form.Group className="my-2" controlId="email11">
+              <Form.Label>Price</Form.Label>
+              <Form.Control
+                type="text"
+                placeholder="Enter Price"
+                value={price}
+                onChange={(e) => setPrice(Number(e.target.value))}
+              ></Form.Control>
+            </Form.Group>
+            <Form.Group className="my-2" controlId="email121">
+              <Form.Label>Size Variants</Form.Label>
+              <Form.Control
+                type="text"
+                placeholder="Enter sizes"
+                value={si}
+                onChange={(e) => setSi(e.target.value)}
+              ></Form.Control>
+            </Form.Group>
+            <Form.Group className="my-2" controlId="email132">
+              <Form.Label>Stock of Variants</Form.Label>
+              <Form.Control
+                type="text"
+                placeholder="Enter Stock of variants"
+                value={st}
+                onChange={(e) => setSt(e.target.value)}
+              ></Form.Control>
+            </Form.Group>
+            <Form.Group className="my-2" controlId="email12323">
+              <Form.Label>Color</Form.Label>
+              <Form.Control
+                type="text"
+                placeholder="Enter color"
+                value={color}
+                onChange={(e) => setColor(e.target.value)}
+              ></Form.Control>
+            </Form.Group>
+
             <Button type="submit" variant="primary">
               Update
             </Button>
@@ -178,7 +231,7 @@ function EditProductScreen() {
           </Form>
         </Col>
       </Row>
-      <Row className="review">
+      {/* <Row className="review">
         <Col md={{ span: 8, offset: 2 }}>
           <h2>Variants</h2>
           {product?.variant.length === 0 && <p>No Variants</p>}
@@ -275,7 +328,7 @@ function EditProductScreen() {
             </ListGroup.Item>
           </ListGroup>
         </Col>
-      </Row>
+      </Row> */}
     </>
   );
 }

@@ -22,6 +22,8 @@ const DetailsScreen = () => {
   const [city, setCity] = useState("");
   const [postalCode, setPostalCode] = useState("");
   const [country, setCountry] = useState("");
+  const [state, setState] = useState("");
+  const [contact, setContact] = useState("");
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -30,7 +32,17 @@ const DetailsScreen = () => {
     e.preventDefault();
     dispatch(
       saveShippingAddress(
-        address + " " + city + " " + postalCode + " " + country
+        address +
+          " " +
+          city +
+          " " +
+          postalCode +
+          " " +
+          state +
+          " " +
+          country +
+          " Contact:" +
+          contact
       )
     );
     navigate("/payment");
@@ -79,6 +91,16 @@ const DetailsScreen = () => {
                 onChange={(e) => setPostalCode(e.target.value)}
               ></Form.Control>
             </Form.Group>
+            <Form.Group className="my-2" controlId="country2">
+              <Form.Label>State</Form.Label>
+              <Form.Control
+                type="text"
+                placeholder="Enter State"
+                value={state}
+                required
+                onChange={(e) => setState(e.target.value)}
+              ></Form.Control>
+            </Form.Group>
 
             <Form.Group className="my-2" controlId="country">
               <Form.Label>Country</Form.Label>
@@ -88,6 +110,16 @@ const DetailsScreen = () => {
                 value={country}
                 required
                 onChange={(e) => setCountry(e.target.value)}
+              ></Form.Control>
+            </Form.Group>
+            <Form.Group className="my-2" controlId="country1321">
+              <Form.Label>Contact Number</Form.Label>
+              <Form.Control
+                type="text"
+                placeholder="Enter number"
+                value={contact}
+                required
+                onChange={(e) => setContact(e.target.value)}
               ></Form.Control>
             </Form.Group>
 

@@ -4,14 +4,20 @@ import {
   useCreateProductMutation,
   useUploadProductImageMutation,
 } from "../../slices/productsApiSlice";
+import { useGetCategoriesQuery } from "../../slices/categoryApiSlice";
 import { useSelector } from "react-redux";
 import { useNavigate, Link } from "react-router-dom";
 function AddProductScreen() {
+  const { data: categories } = useGetCategoriesQuery();
   const [name, setName] = useState("");
   const [brand, setBrand] = useState("");
   const [category, setCategory] = useState("");
   const [description, setDescription] = useState("");
   const [image, setImage] = useState("");
+  const [color, setColor] = useState("");
+  const [si, setSi] = useState("");
+  const [price, setPrice] = useState("");
+  const [st, setSt] = useState("");
   const { userInfo } = useSelector((state) => state.auth);
 
   const [createProduct, { isLoading: loadingUpdate }] =
@@ -23,6 +29,8 @@ function AddProductScreen() {
   const navigate = useNavigate();
 
   const submitHandler = async (e) => {
+    const size = si.split(",").map((o) => o.trim());
+    const stock = st.split(",").map((o) => Number(o.trim()));
     e.preventDefault();
     try {
       await createProduct({
@@ -32,6 +40,10 @@ function AddProductScreen() {
         brand,
         category,
         description,
+        size,
+        stock,
+        color,
+        price,
       }).unwrap();
       window.alert("Product created");
       navigate("/admin/products");
@@ -98,12 +110,30 @@ function AddProductScreen() {
             </Form.Group>
             <Form.Group className="my-2" controlId="email">
               <Form.Label>Category</Form.Label>
+
               <Form.Control
+                as="select"
+                value={category}
+                onChange={(e) => setCategory(e.target.value)}
+              >
+                <option>Select</option>
+                {categories?.map((cat) => (
+                  <option key={cat._id} value={cat._id}>
+                    {cat.name}
+                  </option>
+                ))}
+                {/* <option value={"shirt"}>Shirt</option>
+                <option value={"bottoms"}>Buttoms</option>
+                <option value={"sweater"}>Sweater</option>
+                <option value={"cap"}>Cap</option>
+                <option value={"Outerwear"}>Outerwear</option> */}
+              </Form.Control>
+              {/* <Form.Control
                 type="text"
                 placeholder="Enter category"
                 value={category}
                 onChange={(e) => setCategory(e.target.value)}
-              ></Form.Control>
+              ></Form.Control> */}
             </Form.Group>
             <Form.Group className="my-2" controlId="email1">
               <Form.Label>description</Form.Label>
@@ -112,6 +142,43 @@ function AddProductScreen() {
                 placeholder="Enter description"
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
+              ></Form.Control>
+            </Form.Group>
+
+            <Form.Group className="my-2" controlId="email11">
+              <Form.Label>Price</Form.Label>
+              <Form.Control
+                type="text"
+                placeholder="Enter Price"
+                value={price}
+                onChange={(e) => setPrice(Number(e.target.value))}
+              ></Form.Control>
+            </Form.Group>
+            <Form.Group className="my-2" controlId="email121">
+              <Form.Label>Size Variants</Form.Label>
+              <Form.Control
+                type="text"
+                placeholder="Enter sizes"
+                value={si}
+                onChange={(e) => setSi(e.target.value)}
+              ></Form.Control>
+            </Form.Group>
+            <Form.Group className="my-2" controlId="email132">
+              <Form.Label>Stock of Variants</Form.Label>
+              <Form.Control
+                type="text"
+                placeholder="Enter Stock of variants"
+                value={st}
+                onChange={(e) => setSt(e.target.value)}
+              ></Form.Control>
+            </Form.Group>
+            <Form.Group className="my-2" controlId="email12323">
+              <Form.Label>Color</Form.Label>
+              <Form.Control
+                type="text"
+                placeholder="Enter color"
+                value={color}
+                onChange={(e) => setColor(e.target.value)}
               ></Form.Control>
             </Form.Group>
 

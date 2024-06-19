@@ -2,7 +2,19 @@ import asyncHandler from "../middlewares/asyncHandler.js";
 import User from "../models/User.js";
 
 const registerUser = asyncHandler(async (req, res) => {
-  const { firstname, lastname, email, password, dob, phone } = req.body;
+  const {
+    firstname,
+    lastname,
+    email,
+    password,
+    dob,
+    phone,
+    address,
+    city,
+    pin,
+    state,
+    country,
+  } = req.body;
 
   const userExists = await User.findOne({ email });
 
@@ -18,6 +30,11 @@ const registerUser = asyncHandler(async (req, res) => {
     password,
     dob,
     phone,
+    address,
+    city,
+    pin,
+    state,
+    country,
   });
 
   if (user) {
@@ -60,6 +77,11 @@ const getUserProfile = asyncHandler(async (req, res) => {
       role: user.role,
       phone: user.phone,
       dob: user.dob,
+      address: user.address,
+      city: user.city,
+      pin: user.pin,
+      state: user.state,
+      country: user.country,
     });
   } else {
     res.status(404);
@@ -75,6 +97,11 @@ const updateUserProfile = asyncHandler(async (req, res) => {
     user.email = req.body.email || user.email;
     user.dob = req.body.dob || user.dob;
     user.phone = req.body.phone || user.phone;
+    user.address = req.body.address || user.address;
+    user.city = req.body.city || user.city;
+    user.pin = req.body.pin || user.pin;
+    user.state = req.body.state || user.state;
+    user.country = req.body.country || user.country;
     if (req.body.password) {
       user.password = req.body.password;
     }

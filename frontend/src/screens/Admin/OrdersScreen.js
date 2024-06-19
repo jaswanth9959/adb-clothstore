@@ -7,7 +7,7 @@ function OrdersScreen() {
     <div>
       <Row>
         <Col md={{ span: 10, offset: 1 }}>
-          <h2>My Orders</h2>
+          <h2>Orders</h2>
           {isLoading ? (
             <p>Loading...</p>
           ) : error ? (
@@ -36,7 +36,7 @@ function OrdersScreen() {
                         : "❌"}
                     </td>
                     <td>
-                      {order.isCompleted
+                      {order.orderStatus === "Order is Completed."
                         ? new Date(order.completedOn).toLocaleDateString(
                             "en-US"
                           )

@@ -18,6 +18,11 @@ const customers = [
     password: bcrypt.hashSync("123456", 10),
     role: "user",
     phone: "1234567890",
+    address: "505 S Main",
+    city: "Lee's Summit",
+    pin: "65077",
+    state: "MO",
+    country: "USA",
   },
   {
     firstname: "john",
@@ -26,6 +31,11 @@ const customers = [
     password: bcrypt.hashSync("123456", 10),
     role: "user",
     phone: "1234567890",
+    address: "505 S Main",
+    city: "Lee's Summit",
+    pin: "65077",
+    state: "MO",
+    country: "USA",
   },
 ];
 export default customers;

@@ -24,7 +24,7 @@ function ProductsScreen() {
   return (
     <div>
       <Row>
-        <Col md={{ span: 10, offset: 1 }}>
+        <Col md={12}>
           <h2>All Products</h2>
           <Link to="/admin/product/add">
             <Button variant="primary">Add New Product</Button>
@@ -42,6 +42,10 @@ function ProductsScreen() {
                   <th>NAME</th>
                   <th>Brand</th>
                   <th>CATEGORY</th>
+                  <th>COLOR</th>
+                  <th>SIZE OPTIONS</th>
+                  <th>STOCK</th>
+                  <th>PRICE</th>
                   <th></th>
                 </tr>
               </thead>
@@ -59,7 +63,11 @@ function ProductsScreen() {
                     </td>
                     <td>{product.name}</td>
                     <td>{product.brand}</td>
-                    <td>{product.category}</td>
+                    <td>{product.category.name}</td>
+                    <td>{product.color}</td>
+                    <td>{product.size.join(",")}</td>
+                    <td>{product.stock.join(",")}</td>
+                    <td>{product.price}</td>
                     <td>
                       <Button
                         onClick={() =>

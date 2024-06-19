@@ -18,6 +18,7 @@ const PaymentScreen = () => {
   const dispatch = useDispatch();
   const [createOrder, { isLoading }] = useCreateOrderMutation();
   const [card, setCard] = useState("");
+  const [name, setName] = useState("");
   const [cvv, setCvv] = useState("");
   const [exp, setExp] = useState("");
   const {
@@ -45,6 +46,7 @@ const PaymentScreen = () => {
         shippingPrice: shippingPrice,
         taxPrice: taxPrice,
         totalPrice: totalPrice,
+        orderType: method,
       }).unwrap();
       dispatch(clearcart());
       navigate(`/order/${res._id}`);
@@ -130,6 +132,16 @@ const PaymentScreen = () => {
               </ListGroup.Item>
               <ListGroup.Item>
                 <Form>
+                  <Form.Group className="my-2" controlId="address22">
+                    <Form.Label>Card Holder Name</Form.Label>
+                    <Form.Control
+                      type="text"
+                      placeholder="Enter Card Holder Name"
+                      value={name}
+                      onChange={(e) => setName(e.target.value)}
+                      required
+                    ></Form.Control>
+                  </Form.Group>
                   <Form.Group className="my-2" controlId="address">
                     <Form.Label>Card Number</Form.Label>
                     <Form.Control

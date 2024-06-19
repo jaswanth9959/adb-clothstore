@@ -9,7 +9,7 @@ import userRoutes from "./routes/User.js";
 import productRoutes from "./routes/Products.js";
 // import customerRoutes from "./routes/customers.js";
 import orderRoutes from "./routes/Order.js";
-// import staffRoutes from "./routes/staff.js";
+import categoryRoutes from "./routes/category.js";
 import uploadRoutes from "./routes/upload.js";
 
 dotenv.config();
@@ -24,7 +24,7 @@ app.use(cookieParser());
 connectDB();
 
 app.use("/api/products", productRoutes);
-// app.use("/api/category", categoryRoutes);
+app.use("/api/category", categoryRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/orders", orderRoutes);
 // app.use("/api/staff", staffRoutes);
